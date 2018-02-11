@@ -1,6 +1,10 @@
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
 
+/**
+ * handleFile
+ * handle file upload on input
+ */
 const handleFile = () => {
   const x = document.getElementById('fr-upload')
   if (x.files && x.files[0]) {
@@ -8,12 +12,15 @@ const handleFile = () => {
     fr.onload = e => {
       const img = new Image()
       img.addEventListener('load', () => {
+        // Update canvas size to match img size
         canvas.width = img.width
         canvas.height = img.height
+        // Draw image on canvas
         addFilters()
         ctx.drawImage(img, 0, 0)
+        // Add shapes
         const diagMaxRadius = 100
-        drawRecursiveDiamondsAllOverCanvas(canvas, diagMaxRadius)
+        drawRecursiveShapesAllOverCanvas(canvas, diagMaxRadius)
       })
       img.src = e.target.result
     }
@@ -21,32 +28,24 @@ const handleFile = () => {
   }
 }
 
+/**
+ * addFilters
+ * add filters to canvas before rendering
+ */
 const addFilters = () => {
-  ctx.filter = 'grayscale(100%) brightness(120%)'
+  ctx.filter = 'grayscale(100%)'
 }
 
-const drawLines = (canvas, img) => {
-  const imgData = getImageData(img)
-  const context = canvas.getContext('2d')
-
-  imgData.forEach((pixel, index) => {
-    if (Math.floor(index/img.width) % 2 === 0) {
-      const xPos = index % img.width
-      const yPos = Math.floor(index/img.width)
-      ctx.fillStyle = `rgb(${pixel.r}, ${pixel.g}, ${pixel.b})`
-      ctx.fillRect( xPos, yPos, 1,1)
-    }
-  })
-
-  // for (let i = 0; i < canvas.height; i = i+4) {
-  //   context.beginPath()
-  //   context.moveTo(0,i)
-  //   context.lineTo(canvas.width, i)
-  //   canvas.lineWidth = 1
-  //   context.stroke()
-  // }
-}
-
+/**
+ * @param {Object} img - The img to analyse
+ * @param {number} img.width - width of image
+ * @param {number} img.height - height of image
+ * @return {Object[]} data - The data of image for each pixels
+ * @return {number} data[].r - The red value of pixel
+ * @return {number} data[].g - The green value of pixel
+ * @return {number} data[].b - The blue value of pixel
+ * @return {number} data[].q - The alpha value of pixel
+ */
 const getImageData = img => {
   const canvas = document.createElement('canvas')
   canvas.width = img.width
@@ -72,90 +71,83 @@ const getImageData = img => {
 }
 
 /**
- * drawDiamond
- * Draw a diamon shape from top point and diamon length
- * @param {Object} topPoint - The top position of the diamon
- * @param {number} topPoint.x - the x position of the point
- * @param {number} topPoint.y - the y position of the point
+ * drawShape
+ * Draw a  shape from center and radius
+ * @param {Object} center - The top position of the diamon
+ * @param {number} center.x - the x position of the point
+ * @param {number} center.y - the y position of the point
+ * @param {number} sides - the number of sides of shape
  * @param {Number} diagonal - The diagonal length of the diamond
+ * @param {number} adjustement - angle adjustment for shape
  */
-const drawDiamond = (topPoint, diagonal) => {
-  // Calculate position of each corner
-  const bottomPoint = {
-    x: topPoint.x,
-    y: topPoint.y + diagonal
-  }
-  const leftPoint = {
-    x: topPoint.x - diagonal/2,
-    y: topPoint.y + diagonal/2
-  }
-  const rightPoint = {
-    x: topPoint.x + diagonal/2,
-    y: topPoint.y + diagonal/2
+const drawShape = (center, sides, diagonal, adjustment = 1) => {
+  const step  = 2 * Math.PI / sides
+  const shift = (Math.PI / 180.0) * adjustment
+
+  ctx.beginPath()
+
+  for (let i = 0; i <= sides;i++) {
+    const curStep = i * step + shift
+    ctx.lineTo (center.x + diagonal * Math.cos(curStep), center.y + diagonal * Math.sin(curStep))
   }
 
-  // Draw lines to make diamond
-  // Top to right
-  ctx.beginPath()
-  ctx.moveTo(topPoint.x, topPoint.y)
-  ctx.lineTo(rightPoint.x, rightPoint.y)
-  ctx.lineTo(bottomPoint.x, bottomPoint.y)
-  ctx.lineTo(leftPoint.x, leftPoint.y)
-  ctx.closePath()
   ctx.strokeStyle = "#FFFFFF"
+  ctx.lineWidth = 1
   ctx.stroke()
 }
 
 /**
- * drawRecursiveDiamons
- * Draw recursive diamonds from center to specified radius
+ * drawRecursiveShapes
+ * Draw recursive shapes from center to specified radius
  * @param {Object} center - center point to begin drawing diamons
  * @param {number} center.x - x position of center 
  * @param {number} center.y - y position of center 
  * @param {number} radius - the max radius of diamonds
  * @param {boolean} outEdges - if the outer edge of diamon should be displayed
  */
-const drawRecursiveDiamonds = (center, radius, outEdges = true) => {
+const drawRecursiveShapes = (center, radius, outEdges = true) => {
   const step = 4
-  // Draw diamonds
   const loopLimit = (outEdges) ? radius : radius - step
+
   for (let i=0; i <= loopLimit; i += step) {
     const top = {
       x: center.x,
       y: center.y - i
     }
-    drawDiamond(top, i*2)
+    drawShape(center, 6, i, 180)
   }
 }
 
 /**
+ * drawRecursiveShapesAllOverCanvas
+ * draw recursives shapes on the all canvas to cover it
  * @param  {Object} canvas - The canvas we draw in
  * @param {number} canvas.width - width of canvas
  * @param {number} canvas.height - height of canvas
  * @param  {number} radius - The radius of diamonds
  */
-const drawRecursiveDiamondsAllOverCanvas = (canvas, radius) => {
-  for (let y = 0; y <= canvas.height + radius; y += radius) {
-    if ((y/radius) % 2 === 0) {
-      for (let x = 0; x < (canvas.width / radius*2); x++) {
+const drawRecursiveShapesAllOverCanvas = (canvas, radius) => {
+  const innerRadius = Math.round(Math.sqrt(3)/2 * radius)
+
+  for (let y = 0; y < (canvas.height / innerRadius) + innerRadius; y++) {
+    if (y % 2 === 0) {
+      for (let x = 0; x < (canvas.width / radius); x++) {
+        const xAdjusment = (x > 0) ? (2 * x) : 0
         const center = {
-          x: x * radius*2,
-          y: y
+          x: (x * radius*3) - xAdjusment,
+          y: (innerRadius + 1) * y
         }
-        drawRecursiveDiamonds(center, radius)
+        drawRecursiveShapes(center, radius)
       }
-    } else if ((y/radius) % 2 === 1) {
-      for (let x = 0; x < (canvas.width / radius*2); x++) {
+    } else {
+      for (let x = 0; x < ((canvas.width - (innerRadius+radius)) / radius); x++) {
+        const xAdjusment = x + 1 + x%2
         const center = {
-          x: x * radius*2 + radius,
-          y: y
+          x: (x * radius*3 + radius * 1.5) - xAdjusment,
+          y: (innerRadius + 1) * y
         }
-        drawRecursiveDiamonds(center, radius, false)
+        drawRecursiveShapes(center, radius, true)
       }
     }
   }
 }
-
-// SCRIPTS BEGIN HEEEEEEEERE
-const diagMaxRadius = 100
-// drawRecursiveDiamondsAllOverCanvas(canvas, diagMaxRadius)
