@@ -5,7 +5,8 @@ Experiments with canvas, images and shapes
 ## Installation
 
 ### Requirements
-You'll need (http-server)[https://www.npmjs.com/package/http-server] to run the project, but you can use any static server of your choice
+You will need the following for running the project:
+* (Parcel)[https://parceljs.org]
 
 ### Run
-Run the project with `http-server -c-1`
+Run with: `parcel index.html`
