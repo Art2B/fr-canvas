@@ -4,6 +4,7 @@
   "description": "having fun with canvas",
   "main": "sketch.js",
   "scripts": {
+    "start": "parcel index.html"
   },
   "repository": {
     "type": "git",
