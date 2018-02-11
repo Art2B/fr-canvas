@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/Art2B/fr-canvas/issues"
   },
-  "homepage": "https://github.com/Art2B/fr-canvas#readme"
+  "homepage": "https://github.com/Art2B/fr-canvas#readme",
+  "devDependencies": {
+    "babel-preset-env": "^1.6.1"
+  }
 }
