@@ -4,8 +4,8 @@
   "description": "having fun with canvas",
   "main": "sketch.js",
   "scripts": {
-    "start": "parcel index.html -p 1234",
-    "build": "parcel build index.html -d dist/build --public-url ./",
+    "start": "parcel src/index.html -p 1234",
+    "build": "parcel build src/index.html -d dist/build --public-url ./",
     "test": "standard"
   },
   "repository": {
