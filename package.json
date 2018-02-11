@@ -5,7 +5,8 @@
   "main": "sketch.js",
   "scripts": {
     "start": "parcel index.html -p 1234",
-    "build": "parcel build index.html -d dist/build --public-url ./"
+    "build": "parcel build index.html -d dist/build --public-url ./",
+    "test": "standard"
   },
   "repository": {
     "type": "git",
