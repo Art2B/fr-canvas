@@ -34,17 +34,17 @@ const drawImage = (canvas, base64) => {
 }
 
 const Canvas = ({ image }) => (
-  <canvas 
+  <canvas
     onupdate={(element, oldProps) => {
       drawImage(element, image)
-    }} 
+    }}
   />
 )
 
 const view = (state, actions) => (
   <div>
-    <input type="file" id="fr-upload" multiple size="50" onchange={e => actions.handleFile(e.target.files[0])} />
-    <Canvas image={ state.image } />
+    <input type='file' id='fr-upload' multiple size='50' onchange={e => actions.handleFile(e.target.files[0])} />
+    <Canvas image={state.image} />
   </div>
 )
 
