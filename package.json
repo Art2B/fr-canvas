@@ -1,0 +1,22 @@
+{
+  "name": "fr-canvas",
+  "version": "1.0.0",
+  "description": "having fun with canvas",
+  "main": "sketch.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Art2B/fr-canvas.git"
+  },
+  "keywords": [
+    "canvas"
+  ],
+  "author": "Art2B <@mr_marabout>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Art2B/fr-canvas/issues"
+  },
+  "homepage": "https://github.com/Art2B/fr-canvas#readme"
+}
