@@ -1,3 +1,6 @@
 # Parcel files
 .cache/
 dist/
+
+# Nodes modules. You don't want a repo with 2.3 Go of dependencies ?
+node_modules/
