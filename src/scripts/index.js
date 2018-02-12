@@ -1,6 +1,8 @@
 import 'babel-polyfill'
 import { h, app } from 'hyperapp'
 
+import Hexagon from './hexagon'
+
 const state = {
   image: ''
 }
@@ -28,7 +30,11 @@ const drawImage = (canvas, base64) => {
     canvas.width = img.width
     canvas.height = img.height
     // Draw image on canvas
+    ctx.filter = 'grayscale(100%)'
     ctx.drawImage(img, 0, 0)
+    // Draw hexagons on image
+    const hexa = new Hexagon(canvas, 100)
+    hexa.draw()
   })
   img.src = base64
 }
