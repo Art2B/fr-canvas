@@ -3,6 +3,8 @@ import { h, app } from 'hyperapp'
 
 import Hexagon from './hexagon'
 
+import './../assets/styles/index.scss'
+
 const state = {
   image: ''
 }
