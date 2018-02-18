@@ -4,7 +4,7 @@ Experiments with canvas, images and shapes
 
 ## Installation
 ```
-yarn i
-yarn start
+npm i
+npm start
 ```
 Open `localhost:1234` in your browser.
