@@ -1,6 +1,8 @@
 @import 'lib/reset';
 
+@import 'config/variables';
+
 @import 'components/layout';
 @import 'components/header';
-@import 'components/canvas';
+@import 'components/main';
 @import 'components/footer';
