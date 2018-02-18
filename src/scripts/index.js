@@ -50,9 +50,23 @@ const Canvas = ({ image }) => (
 )
 
 const view = (state, actions) => (
-  <div>
-    <input type='file' id='fr-upload' multiple size='50' onchange={e => actions.handleFile(e.target.files[0])} />
-    <Canvas image={state.image} />
+  <div className='app-view'>
+    <header>
+      <div className='hexagon-anim' />
+      <h1>Hexag on canvas</h1>
+    </header>
+    <section className='explanations'>
+      <p>Choose an image, let me process it, and BAM! You have a cool image made with hexagons.</p>
+    </section>
+    <main className={state.image ? 'is-file' : ''}>
+      <label className='file-input' for='fr-upload'><span className='text-bg'>Choose a <i A className="fas fa-fire" /> af image.</span></label>
+      <input type='file' id='fr-upload' size='50' onchange={e => actions.handleFile(e.target.files[0])} />
+      <Canvas image={state.image} />
+    </main>
+    <footer>
+      <div className='border'/>
+      Made with <i className='far fa-keyboard' /> by <a href='https://twitter.com/mr_marabout' target='_blank'>Art2B</a>
+    </footer>
   </div>
 )
 
