@@ -1,4 +1,8 @@
 export default {
+  allowedFileTypes: ["image/png", "image/jpeg", "image/jpg"],
+  errorMessages: {
+    fileType: 'File type is not supported. Please use png or jpg image.'
+  },
   logoHexagons: [
     {
       size: 46,
