@@ -35,7 +35,7 @@ const view = (state, actions) => {
     <div className='app-view'>
       <Header />
       <main>
-        <Route path="/" render={Home} />
+        <Route path="/" render={Home({image: state.image, handleFile: actions.handleFile})} />
         { state.location.pathname !== '/' &&
           <NotFound />
         }

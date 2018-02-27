@@ -2,7 +2,7 @@ import { h, app } from 'hyperapp'
 
 import Canvas from './canvas'
 
-export default ({image, handleFile}) => (
+export default ({image, handleFile}) => () => (
   <div>
     <section className='explanations'>
       <p>Choose an image, let me process it, and BAM! You have a cooler image made with hexagons.</p>
