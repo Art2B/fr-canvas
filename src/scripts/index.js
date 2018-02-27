@@ -75,7 +75,7 @@ const view = (state, actions) => (
     </main>
     <footer>
       <div className='border'/>
-      Made with <i className='far fa-keyboard' /> by <a href='https://twitter.com/mr_marabout' target='_blank'>Art2B</a>
+      Made with <i className='far fa-keyboard' /> by <a href='https://twitter.com/mr_marabout' target='_blank' rel="noopener noreferrer">Art2B</a>
     </footer>
   </div>
 )
