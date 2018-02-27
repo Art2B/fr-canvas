@@ -9,16 +9,21 @@ html, body {
 }
 
 .app-view {
-  height: 100%;
-  padding: 10px 0;
+  min-height: 100%;
+  width: 80%;
+  max-width: 1200px;
+  margin: auto;
+  padding: 10px 0 0;
   box-sizing: border-box;
   font-family: Courier New;
   color: $primary-color;
+  text-align: center;
 }
 
 .explanations {
-  width: 90%;
+  width: 100%;
   margin: auto;
+  text-align: left;
 }
 
 a {

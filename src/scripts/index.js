@@ -2,6 +2,7 @@ import 'babel-polyfill'
 import { h, app } from 'hyperapp'
 
 import Hexagon from './hexagon'
+import config from './config'
 
 import './../assets/styles/index.scss'
 
@@ -41,22 +42,31 @@ const drawImage = (canvas, base64) => {
   img.src = base64
 }
 
+const logoAnim = canvas => {
+  canvas.height = 100
+  canvas.width = 100
+
+  const hexa = new Hexagon(canvas)
+
+  hexa.drawLogoAnim(config.logoHexagons)
+}
+
 const Canvas = ({ image }) => (
   <canvas
     onupdate={(element, oldProps) => {
       drawImage(element, image)
     }}
-  />
+  ></canvas>
 )
 
 const view = (state, actions) => (
   <div className='app-view'>
     <header>
-      <div className='hexagon-anim' />
+      <canvas className='hexagon-anim' oncreate={el => logoAnim(el)} />
       <h1>Hexag on canvas</h1>
     </header>
     <section className='explanations'>
-      <p>Choose an image, let me process it, and BAM! You have a cool image made with hexagons.</p>
+      <p>Choose an image, let me process it, and BAM! You have a cooler image made with hexagons.</p>
     </section>
     <main className={state.image ? 'is-file' : ''}>
       <label className='file-input' for='fr-upload'><span className='text-bg'>Choose a <i A className="fas fa-fire" /> af image.</span></label>

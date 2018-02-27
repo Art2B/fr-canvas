@@ -5,8 +5,7 @@ export default class Hexagon {
  * @param {Object} canvas - The canvas to draw in
  * @param {number} radius - The radius of the hexagons
  */
-  constructor (canvas, radius) {
-    console.log('Create new hexagon')
+  constructor (canvas, radius = 100) {
     this.canvas = canvas
     this.radius = radius
   }
@@ -17,24 +16,28 @@ export default class Hexagon {
    * @param {Object} center - The top position of the diamon
    * @param {number} center.x - the x position of the point
    * @param {number} center.y - the y position of the point
-   * @param {number} sides - the number of sides of shape
    * @param {Number} diagonal - The diagonal length of the diamond
    * @param {number} adjustement - angle adjustment for shape
+   * @param {string} color - The color to draw the hexagon in
    */
-  drawHexagon (center, sides, diagonal, adjustment = 1) {
+  drawHexagon (center, diagonal, {
+    adjustment: adjustment = 1,
+    color: color = '#FFFFFF',
+    lineWidth: lineWidth = 1
+  }) {
     const ctx = this.canvas.getContext('2d')
-    const step = 2 * Math.PI / sides
+    const step = Math.PI / 3
     const shift = (Math.PI / 180.0) * adjustment
 
     ctx.beginPath()
 
-    for (let i = 0; i <= sides; i++) {
+    for (let i = 0; i <= 6; i++) {
       const curStep = i * step + shift
       ctx.lineTo(center.x + diagonal * Math.cos(curStep), center.y + diagonal * Math.sin(curStep))
     }
 
-    ctx.strokeStyle = '#FFFFFF'
-    ctx.lineWidth = 1
+    ctx.strokeStyle = color
+    ctx.lineWidth = lineWidth
     ctx.stroke()
   }
 
@@ -52,7 +55,7 @@ export default class Hexagon {
     const loopLimit = (outEdges) ? radius : radius - step
 
     for (let i = 0; i <= loopLimit; i += step) {
-      this.drawHexagon(center, 6, i, 180)
+      this.drawHexagon(center, i, {adjustment: 180})
     }
   }
 
@@ -84,5 +87,30 @@ export default class Hexagon {
         }
       }
     }
+  }
+
+  drawLogoAnim (hexagons) {
+    const center = {
+      x: this.canvas.width/2,
+      y: this.canvas.height/2
+    }
+
+    const logoAnim = () => {
+      const ctx = this.canvas.getContext('2d')
+      ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+
+      hexagons.map(hexagon => {
+        hexagon.options.adjustment += hexagon.step
+        return hexagon
+      })
+
+      hexagons.forEach(hexagon => {
+        this.drawHexagon(center, hexagon.size, hexagon.options)
+      });
+
+      requestAnimationFrame(logoAnim)
+    }
+
+    requestAnimationFrame(logoAnim)
   }
 }
