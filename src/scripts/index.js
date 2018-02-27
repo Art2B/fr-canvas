@@ -31,7 +31,6 @@ const actions = {
 }
 
 const view = (state, actions) => {
-  console.log(state.location)
   return (
     <div className='app-view'>
       <Header />
