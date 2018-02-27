@@ -1,4 +1,5 @@
 import { h, app } from 'hyperapp'
+import { Link } from "@hyperapp/router"
 
 import Hexagon from './../hexagon'
 import config from './../config'
@@ -15,6 +16,6 @@ const logoAnim = canvas => {
 export default ({}) => (
   <header>
     <canvas className='hexagon-anim' oncreate={el => logoAnim(el)} />
-    <h1>Hexag on canvas</h1>
+    <h1><Link to='/'>Hexag on canvas</Link></h1>
   </header>
 )
