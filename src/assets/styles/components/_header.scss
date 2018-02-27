@@ -9,4 +9,7 @@ header {
   h1 {
     font-size: 32px;
   }
+  a, a:hover, a:visited, a:active {
+    color: $primary-color;
+  }
 }
