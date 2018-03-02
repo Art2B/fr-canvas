@@ -13,7 +13,10 @@ import './../assets/styles/index.scss'
 
 const state = {
   location: location.state,
-  image: null,
+  image: {
+    data: null,
+    name: null
+  },
   error: null
 }
 
@@ -21,7 +24,6 @@ const actions = {
   location: location.actions,
   handleFile: file => async (state, actions) => {
     if (config.allowedFileTypes.find(type => file.type === type)) {
-      console.log(file)
       const img = await new Promise(resolve => {
         const fr = new FileReader()
         fr.onload = e => {
@@ -29,13 +31,16 @@ const actions = {
         }
         fr.readAsDataURL(file)
       })
-      actions.setImage(img)
+      actions.setImage({
+        data: img,
+        name: 'hexagon_' + file.name
+      })
       actions.setError(null)
     } else {
       actions.setError(config.errorMessages.fileType)
     }
   },
-  setImage: value => state => ({ image: value }),
+  setImage: value => state => ({ image: Object.assign({}, state.image, value) }),
   setError: value => state => ({ error: value })
 }
 
