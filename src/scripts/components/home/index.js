@@ -7,7 +7,7 @@ export default ({image, error, setImage, handleFile}) => () => (
     <section className='explanations'>
       <p>Choose an image, let me process it, and BAM! You have a cooler image made with hexagons.</p>
     </section>
-    <section className={image ? 'home is-file' : 'home'}>
+    <section className={image.data ? 'home is-file' : 'home'}>
       <div className='input-container'>
         <label for='fr-upload'><span className='text-bg'>Choose a <i A className="fas fa-fire" /> af image.</span></label>
         <input 
@@ -23,9 +23,15 @@ export default ({image, error, setImage, handleFile}) => () => (
           <p class='file-error'>{error}</p>
         }
       </div>
-      <Canvas image={image} />
-      { image &&
-        <button type='button' class='clear' onclick={() => setImage(null)} >Clear</button>
+      <Canvas image={image.data} />
+      { image.data &&
+        <div class='btn-container'>
+          <button type='button' class='clear' onclick={() => setImage({data: null, name: null})} >Clear</button>
+          <a class='btn download' onclick={e => {
+            e.target.href = document.getElementById('render').toDataURL()
+            e.target.download = image.name
+          }} >Download</a>
+        </div>
       }
     </section>
   </main>

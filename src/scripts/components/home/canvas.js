@@ -30,6 +30,7 @@ const clearCanvas = (canvas) => {
 
 export default ({ image }) => (
   <canvas
+    id='render'
     onupdate={(element, oldProps) => {
       if (image) {
         drawImage(element, image)
