@@ -13,7 +13,10 @@ import './../assets/styles/index.scss'
 
 const state = {
   location: location.state,
-  image: null,
+  image: {
+    data: null,
+    name: null
+  },
   error: null
 }
 
@@ -28,13 +31,16 @@ const actions = {
         }
         fr.readAsDataURL(file)
       })
-      actions.setImage(img)
+      actions.setImage({
+        data: img,
+        name: 'hexagon_' + file.name
+      })
       actions.setError(null)
     } else {
       actions.setError(config.errorMessages.fileType)
     }
   },
-  setImage: value => state => ({ image: value }),
+  setImage: value => state => ({ image: Object.assign({}, state.image, value) }),
   setError: value => state => ({ error: value })
 }
 
@@ -42,7 +48,7 @@ const view = (state, actions) => {
   return (
     <div className='app-view'>
       <Header />
-      <Route path="/" render={Home({image: state.image, error: state.error, handleFile: actions.handleFile})} />
+      <Route path="/" render={Home({image: state.image, error: state.error, setImage: actions.setImage,  handleFile: actions.handleFile})} />
       { state.location.pathname !== '/' &&
         <NotFound />
       }

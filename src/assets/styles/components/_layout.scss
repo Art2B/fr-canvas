@@ -26,6 +26,10 @@ html, body {
   text-align: left;
 }
 
+input, select, textarea, button {
+  font-family:inherit;
+}
+
 a {
   color: $secondary-color;
   text-decoration: none;
