@@ -20,10 +20,22 @@ const drawImage = (canvas, base64) => {
   img.src = base64
 }
 
+const clearCanvas = (canvas) => {
+  const ctx = canvas.getContext('2d')
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height)
+  canvas.removeAttribute('width')
+  canvas.removeAttribute('height')
+}
+
 export default ({ image }) => (
   <canvas
     onupdate={(element, oldProps) => {
-      drawImage(element, image)
+      if (image) {
+        drawImage(element, image)
+      } else {
+        clearCanvas(element)
+      }
     }}
   ></canvas>
 )
