@@ -21,6 +21,7 @@ const actions = {
   location: location.actions,
   handleFile: file => async (state, actions) => {
     if (config.allowedFileTypes.find(type => file.type === type)) {
+      console.log(file)
       const img = await new Promise(resolve => {
         const fr = new FileReader()
         fr.onload = e => {
@@ -42,7 +43,7 @@ const view = (state, actions) => {
   return (
     <div className='app-view'>
       <Header />
-      <Route path="/" render={Home({image: state.image, error: state.error, handleFile: actions.handleFile})} />
+      <Route path="/" render={Home({image: state.image, error: state.error, setImage: actions.setImage,  handleFile: actions.handleFile})} />
       { state.location.pathname !== '/' &&
         <NotFound />
       }
