@@ -37,3 +37,8 @@ a {
     color: $secondary-color;
   }
 }
+
+@include selection-style {
+  color: $bg-color;
+  background: $secondary-color;
+}

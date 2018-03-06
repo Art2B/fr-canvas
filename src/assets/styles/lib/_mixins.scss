@@ -1,0 +1,8 @@
+@mixin selection-style {
+  *::selection {
+    @content
+  }
+  *::-moz-selection {
+    @content
+  }
+}
