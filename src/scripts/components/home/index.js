@@ -26,7 +26,7 @@ export default ({image, error, setImage, handleFile}) => () => (
       <Canvas image={image.data} />
       { image.data &&
         <div class='btn-container'>
-          <button type='button' class='clear' onclick={() => setImage({data: null, name: null})} >Clear</button>
+          <button type='button' class='btn clear' onclick={() => setImage({data: null, name: null})} >Clear</button>
           <a class='btn download' onclick={e => {
             e.target.href = document.getElementById('render').toDataURL()
             e.target.download = image.name
