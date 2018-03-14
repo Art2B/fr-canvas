@@ -13,12 +13,14 @@ export default class Hexagon {
   /**
    * drawHexagon
    * Draw am hexagon from center and radius
-   * @param {Object} center - The top position of the diamon
+   * @param {Object} center - center of the hexagon
    * @param {number} center.x - the x position of the point
    * @param {number} center.y - the y position of the point
+   * @param {Object} options - Options for hexagon display
    * @param {Number} diagonal - The diagonal length of the diamond
-   * @param {number} adjustement - angle adjustment for shape
-   * @param {string} color - The color to draw the hexagon in
+   * @param {number} options.adjustement - angle adjustment for shape
+   * @param {string} options.color - The color to draw the hexagon in
+   * @param {number} options.lineWidth - The lineWidth of the hexagon 
    */
   drawHexagon (center, diagonal, {
     adjustment: adjustment = 1,
@@ -50,7 +52,7 @@ export default class Hexagon {
    * @param {number} radius - the max radius of diamonds
    * @param {boolean} outEdges - if the outer edge of diamon should be displayed
    */
-  drawRecursiveHexagons (center, radius, outEdges = true) {
+  drawRecursiveHexagons (center, radius = this.radius, outEdges = true) {
     const step = 4
     const loopLimit = (outEdges) ? radius : radius - step
 
@@ -87,30 +89,5 @@ export default class Hexagon {
         }
       }
     }
-  }
-
-  drawLogoAnim (hexagons) {
-    const center = {
-      x: this.canvas.width/2,
-      y: this.canvas.height/2
-    }
-
-    const logoAnim = () => {
-      const ctx = this.canvas.getContext('2d')
-      ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
-
-      hexagons.map(hexagon => {
-        hexagon.options.adjustment += hexagon.step
-        return hexagon
-      })
-
-      hexagons.forEach(hexagon => {
-        this.drawHexagon(center, hexagon.size, hexagon.options)
-      });
-
-      requestAnimationFrame(logoAnim)
-    }
-
-    requestAnimationFrame(logoAnim)
   }
 }

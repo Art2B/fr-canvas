@@ -24,6 +24,10 @@ acorn@^5.0.0, acorn@^5.4.0:
   version "5.4.1"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-5.4.1.tgz#fdc58d9d17f4a4e98d102ded826a9b9759125102"
 
+acorn@^5.1.1:
+  version "5.5.3"
+  resolved "https://registry.yarnpkg.com/acorn/-/acorn-5.5.3.tgz#f473dd47e0277a08e28e9bec5aeeb04751f0b8c9"
+
 ajv-keywords@^1.0.0:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/ajv-keywords/-/ajv-keywords-1.5.1.tgz#314dd0a4b3368fad3dfcdc54ede6171b886daf3c"
@@ -2169,6 +2173,12 @@ globule@^1.0.0:
     glob "~7.1.1"
     lodash "~4.17.4"
     minimatch "~3.0.2"
+
+gpu.js@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/gpu.js/-/gpu.js-1.2.0.tgz#3af30623c6054a11198725fb6dd9ae625ca9fa89"
+  dependencies:
+    acorn "^5.1.1"
 
 graceful-fs@^4.1.2:
   version "4.1.11"
