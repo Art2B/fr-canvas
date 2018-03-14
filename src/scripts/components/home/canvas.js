@@ -1,24 +1,8 @@
 import { h, app } from 'hyperapp'
 
-import Hexagon from './../../hexagon'
+import Renderer from './../../lib/renderer'
 
-const drawImage = (canvas, base64) => {
-  const img = new Image()
-  const ctx = canvas.getContext('2d')
-
-  img.addEventListener('load', () => {
-    // Update canvas size to match img size
-    canvas.width = img.width
-    canvas.height = img.height
-    // Draw image on canvas
-    ctx.filter = 'grayscale(100%)'
-    ctx.drawImage(img, 0, 0)
-    // Draw hexagons on image
-    const hexa = new Hexagon(canvas, 100)
-    hexa.draw()
-  })
-  img.src = base64
-}
+let cRenderer
 
 const clearCanvas = (canvas) => {
   const ctx = canvas.getContext('2d')
@@ -28,15 +12,29 @@ const clearCanvas = (canvas) => {
   canvas.removeAttribute('height')
 }
 
+const onCanvasUpdate = (element, image) => {
+  if (image) {
+    new Promise((resolve, reject) => {
+      const img = new Image()
+      img.addEventListener('load', () => resolve(img))
+      img.src = image
+    })
+    .then(img => {
+      if (!cRenderer) {
+        cRenderer = new Renderer(element, img)
+      } else {
+        cRenderer.updateImage(img)
+      }
+      cRenderer.draw()
+    })
+  } else {
+    cRenderer.clear()
+  }
+}
+
 export default ({ image }) => (
   <canvas
     id='render'
-    onupdate={(element, oldProps) => {
-      if (image) {
-        drawImage(element, image)
-      } else {
-        clearCanvas(element)
-      }
-    }}
+    onupdate={element => onCanvasUpdate(element, image)}
   ></canvas>
 )

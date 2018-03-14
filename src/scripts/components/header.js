@@ -1,16 +1,15 @@
 import { h, app } from 'hyperapp'
 import { Link } from "@hyperapp/router"
 
-import Hexagon from './../hexagon'
+import Logo from './../lib/logoanim'
 import config from './../config'
 
 const logoAnim = canvas => {
   canvas.height = 100
   canvas.width = 100
 
-  const hexa = new Hexagon(canvas)
-
-  hexa.drawLogoAnim(config.logoHexagons)
+  const logo = new Logo(canvas, config.logoHexagons)
+  logo.animate()
 }
 
 export default ({}) => (
