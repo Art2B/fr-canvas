@@ -1,6 +1,4 @@
-function map_range(value, low1, high1, low2, high2) {
-  return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
-}
+import { mapRange } from './helpers'
 
 /**
  * @param {Object} img - The img to analyse
@@ -13,44 +11,48 @@ function map_range(value, low1, high1, low2, high2) {
  * @return {number} data[image.width][image.height].b - The blue value of pixel
  * @return {number} data[image.width][image.height].q - The alpha value of pixel
  */
-export default (img, mode = 'object') => {
+export default (img, mode) => {
   const canvas = document.createElement('canvas')
   canvas.width = img.width
   canvas.height = img.height
-  
+
   const ctx = canvas.getContext('2d')
   ctx.drawImage(img, 0, 0)
   const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height)
 
-  return formatImgData(imgData, {
-    width: img.width,
-    height: img.height
-  }, mode)
+  return formatImgData(imgData, mode)
 }
 
-export const formatImgData = (imgData, size, mode = 'object') => {
-  const data = Array(size.width).fill().map(()=>Array(size.height).fill())
+/**
+ * @param  {Object} imgData - PIxel data from image
+ * @param  {number[]} imgData.data - Pixel color and alpha value for image's pixel
+ * @param  {number} imgData.width - Width of the image
+ * @param  {number} imgData.height - Height of the image
+ * @param  {String} mode - The node for the returned format
+ * @return {Number[][][] || Object[][]}
+ */
+export const formatImgData = (imgData, mode) => {
+  const data = Array(imgData.width).fill().map(()=>Array(imgData.height).fill())
 
-  for (let y = 0; y < size.height; y++) {
-    for (let x = 0; x < size.width; x++) {
-      const i = (x + (size.width * y)) * 4
+  for (let y = 0; y < imgData.height; y++) {
+    for (let x = 0; x < imgData.width; x++) {
+      const i = (x + (imgData.width * y)) * 4
 
-      if (mode === 'object') {
+      if (mode && mode === 'array') {
+        data[x][y] = [
+          mapRange(imgData.data[i], 0, 255, 0, 1),
+          mapRange(imgData.data[i + 1], 0, 255, 0, 1),
+          mapRange(imgData.data[i + 2], 0, 255, 0, 1),
+          mapRange(imgData.data[i + 3], 0, 255, 0, 1)
+        ]
+      } else {
         data[x][y] = {
           r: imgData.data[i],
           g: imgData.data[i + 1],
           b: imgData.data[i + 2],
           a: imgData.data[i + 3]
         }
-      } else if (mode === 'array') {
-        data[x][y] = [
-          map_range(imgData.data[i], 0, 255, 0, 1),
-          map_range(imgData.data[i + 1], 0, 255, 0, 1),
-          map_range(imgData.data[i + 2], 0, 255, 0, 1),
-          map_range(imgData.data[i + 3], 0, 255, 0, 1)
-        ]
       }
-
     }
   }
 
