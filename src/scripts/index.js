@@ -3,7 +3,6 @@ import { h, app } from 'hyperapp'
 import { Link, Route, location } from "@hyperapp/router"
 
 import config from './config'
-import Hexagon from './hexagon'
 import Header from './components/header'
 import Footer from './components/footer'
 import Home from './components/home'
