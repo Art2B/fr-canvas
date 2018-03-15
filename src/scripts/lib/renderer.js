@@ -13,7 +13,7 @@ export default class Renderer {
     this.canvas.width = image.width
     this.canvas.height = image.height
     this.image = image
-    this.imageData = getImageData(image, 'array')
+    this.imageData = getImageData(image)
     this.maskData = this.getMaskData(image)
   }
 
@@ -29,7 +29,7 @@ export default class Renderer {
     map.height =size.height
     const mapHexa = new hexagon(map)
     mapHexa.draw()
-    return formatImgData(map.getContext('2d').getImageData(0, 0, map.width, map.height), 'array')
+    return formatImgData(map.getContext('2d').getImageData(0, 0, map.width, map.height))
   }
 
   /**
@@ -39,7 +39,7 @@ export default class Renderer {
   updateImage (image) {
     this.clear()
     this.image = image
-    this.imageData = getImageData(image, 'array')
+    this.imageData = getImageData(image)
     this.canvas.width = image.width
     this.canvas.height = image.height
     this.maskData = this.getMaskData(image)
