@@ -32,6 +32,7 @@
     "@hyperapp/router": "^0.4.1",
     "babel-polyfill": "^6.26.0",
     "gpu.js": "^1.2.0",
-    "hyperapp": "^1.1.2"
+    "hyperapp": "^1.1.2",
+    "paper": "^0.11.5"
   }
 }

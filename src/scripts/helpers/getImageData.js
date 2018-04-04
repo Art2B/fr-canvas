@@ -1,3 +1,4 @@
+import GPU from 'gpu.js'
 import { mapRange } from './index'
 
 /**
