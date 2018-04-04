@@ -8,55 +8,23 @@ export default class Hexagon {
  * @param {number} radius - The radius of the hexagons
  * @param {Object} options - Options for hexagons drawing
  */
-  constructor (canvas, image, {
-    radius = 80,
-    step = 8,
-    adjustment = 1
-  } = {}) {
+  constructor (canvas, image, options = {}) {
     this.canvas = canvas
     this.image = image
-    // Options values
-    this.radius = radius
-    this.step = step
-    this.adjustment = adjustment
-
     this.project = new paper.Project(canvas)
+
     this.raster = new paper.Raster(image)
     this.raster.visible = false
     this.raster.fitBounds(this.project.view.bounds)
-  }
 
-  /**
-   * drawHexagon`- Simple stroked hexagon
-   * Draw am hexagon from center and radius
-   * @param {Object} center - center of the hexagon
-   * @param {number} center.x - the x position of the point
-   * @param {number} center.y - the y position of the point
-   * @param {Number} radius - The radius of the hexagon
-   * @param {Object} options - Options for hexagon display
-   * @param {number} options.adjustment - Adjust hexagon rotation angle
-   * @param {string} options.color - The color to draw the hexagon in
-   * @param {number} options.lineWidth - The lineWidth of the hexagon 
-   */
-  drawHexagon (center, radius, {
-    adjustment = this.adjustment,
-    color = '#FFFFFF',
-    lineWidth = 1
-  } = {}) {
-    const ctx = this.canvas.getContext('2d')
-    const step = Math.PI / 3
-    const shift = (Math.PI / 180.0) * adjustment
-
-    ctx.beginPath()
-
-    for (let i = 0; i <= 6; i++) {
-      const curStep = i * step + shift
-      ctx.lineTo(center.x + radius * Math.cos(curStep), center.y + radius * Math.sin(curStep))
-    }
-
-    ctx.strokeStyle = color
-    ctx.lineWidth = lineWidth
-    ctx.stroke()
+    this.options = Object.assign({
+      radius: 80,
+      stepGap: 8,
+      adjustment: 1,
+      color: '#000000',
+      lineThickness: 2.7,
+      sideNbStep: 20
+    }, options)
   }
 
   /**
@@ -71,9 +39,10 @@ export default class Hexagon {
     center = {
       x: 0,
       y: 0
-    },
-    radius = this.radius,
-    adjustment = this.adjustment
+    }, {
+      radius = this.options.radius,
+      adjustment = this.options.adjustment
+    }
   ) {
     const step = Math.PI / 3
     const shift = (Math.PI / 180.0) * adjustment
@@ -88,62 +57,77 @@ export default class Hexagon {
   }
 
   /**
-   * drawRasterBasedHexagon - Draw stroke fluid hexagons based on raster color
+   * [getSidePath get a side path]
+   * @param  {paper.Point} startPoint    - Starting point of side
+   * @param  {paper.Point} endPoint      - Endpoint of side
+   * @param  {String} options.color - color to fill the side with
+   * @return {paper.Path} Hexagon Side
+   */
+  getSidePath (startPoint, endPoint, {
+    color = this.options.color,
+    nbStep = this.options.sideNbStep,
+    lineThickness = this.options.lineThickness
+  } = {}) {
+    const hiddenSide = new paper.Path()
+    hiddenSide.add(startPoint)
+    hiddenSide.add(endPoint)
+
+    const side = new paper.Path({
+      fillColor: color,
+      closed: true
+    })
+
+    for (let i = 0; i <= nbStep; i++) {
+      const offsetPoint = hiddenSide.getPointAt(Math.floor((hiddenSide.length / nbStep)) * i)
+      const deltaOffset = (i < nbStep) ? Math.floor((hiddenSide.length / nbStep)) * (i + 1) : Math.floor((hiddenSide.length / nbStep) * (i - 1))
+      const delta = hiddenSide.getPointAt(deltaOffset).rotate(90, offsetPoint).subtract(offsetPoint)
+
+      const color = this.raster.getAverageColor(offsetPoint)
+      const value = color ? (1 - color.gray) * lineThickness : 0
+      delta.length = Math.max(value, 0.2)
+
+      const top = offsetPoint.add(delta)
+      const bottom = offsetPoint.subtract(delta)
+
+      side.add(top)
+      side.insert(0, bottom)
+      side.smooth()
+    }
+
+    return side
+  }
+
+  /**
+   * drawHexagon - Draw stroke fluid hexagons based on raster color
    * @param  {Object} center - Hexagon center position
    * @param  {number} center.x - x center position
    * @param  {number} center.y - y center positionb
-   * @param  {number} radius - Radius of the hexagon
-   * @param  {String} options.color - color to draw the stroke in
+   * @param  {number} options.radius [description]
+   * @param  {String} options.color  [description]
    */
-  drawRasterBasedHexagon (
+  drawHexagon (
     center = {
       x: 0,
       y: 0
     }, 
-    radius = this.radius,
     {
-      color = '#000000'
+      radius = this.options.radius,
+      color = this.options.color
     } = {}
   ) {
-    const path = new paper.Path({
-      closed: true
-    })
-    const anglesPoints = this.getHexagonAnglesPosition(center, radius)
+    const path = new paper.Path({ closed: true })
+    const anglesPoints = this.getHexagonAnglesPosition(center, { radius })
 
     anglesPoints.forEach((point, index) => {
       // Hide certain outer part of hexagon so line don't lap
-      if (radius > this.radius && index > 3) {
+      if (radius > this.options.radius && index < 3) {
         return
       }
 
       const nextPoint = (index < (anglesPoints.length - 1)) ? anglesPoints[index + 1] : anglesPoints[0]
-      const hiddenSide = new paper.Path()
-      hiddenSide.add(point)
-      hiddenSide.add(nextPoint)
-
-      const side = new paper.Path({
-        fillColor: color,
-        closed: true
+      const side = this.getSidePath(point, nextPoint, {
+        color: color
       })
-
-      for (let i = 0; i <= 10; i++) {
-        const offset = Math.floor((hiddenSide.length / 10)) * i
-        const offsetPoint = hiddenSide.getPointAt(offset)
-
-        const deltaOffset = (i < 10) ? Math.floor((hiddenSide.length / 10)) * (i + 1) : Math.floor((hiddenSide.length / 10) * (i - 1))
-        const delta = hiddenSide.getPointAt(deltaOffset).rotate(90, offsetPoint).subtract(offsetPoint)
-
-        const color = this.raster.getAverageColor(offsetPoint)
-        const value = color ? (1 - color.gray) * 2.7 : 0
-        delta.length = Math.max(value, 0.2)
-
-        const top = offsetPoint.add(delta)
-        const bottom = offsetPoint.subtract(delta)
-
-        side.add(top)
-        side.insert(0, bottom)
-        side.smooth()
-      }
 
       path.addSegments(side.segments)
     })
@@ -157,9 +141,13 @@ export default class Hexagon {
    * @param {number} center.y - y position of center
    * @param {number} radius - the max radius of hexagons
    */
-  drawRecursiveHexagons (center, radius = this.radius) {
-    for (let i = 1; i <= (radius + 1); i += this.step) {
-      this.drawRasterBasedHexagon(center, i)
+  drawRecursiveHexagons (center, {
+    radius = this.options.radius
+  }) {
+    for (let i = 1; i <= (radius + 1); i += this.options.stepGap) {
+      this.drawHexagon(center, {
+        radius: i
+      })
     }
   }
 
@@ -168,18 +156,20 @@ export default class Hexagon {
    * draw recursives hexagons on the all canvas to cover it
    */
   draw () {
-    const innerRadius = Math.round(Math.sqrt(3) / 2 * this.radius)
+    const { radius } = this.options
+    const innerRadius = Math.round(Math.sqrt(3) / 2 * radius)
     const ctx = this.canvas.getContext('2d')
-    const xStep = Math.sqrt( Math.pow(this.radius, 2) - Math.pow((this.radius / 2), 2)) * 2
-
+    const xStep = Math.sqrt( Math.pow(radius, 2) - Math.pow((radius / 2), 2)) * 2
     // this.canvas.height
-    for (let y = 0; y < this.canvas.height; y += (this.radius * 1.5)) {
-      const xOffset = (y % this.radius) ? xStep/2 : 0
+    for (let y = 0; y < this.canvas.height; y += (radius * 1.5)) {
+      const xOffset = (y % radius) ? xStep/2 : 0
       for (let x = 0; x < this.canvas.width; x += xStep) {
         this.drawRecursiveHexagons({
           x: xOffset + x,
           y: y
-        }, this.radius)
+        }, {
+          radius: radius
+        })
       }
     }
   }

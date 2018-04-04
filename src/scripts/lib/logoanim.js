@@ -1,14 +1,53 @@
 import Hexagon from './hexagon'
 
-export default class Logo extends Hexagon {
+export default class Logo {
   /**
    * @param  {Object} canvas - canvas to render the animation in
    * @param  {Object[]} hexagons - the infos about hexagons to render
    */
   constructor (canvas, hexagons) {
-    super(canvas)
+    this.canvas = canvas
     this.hexagons = hexagons
     this.animation = null
+  }
+
+  /**
+   * drawHexagon`- Simple stroked hexagon
+   * Draw am hexagon from center and radius
+   * @param {Object} center - center of the hexagon
+   * @param {number} center.x - the x position of the point
+   * @param {number} center.y - the y position of the point
+   * @param {Object} options - Options for hexagon drawing
+   * @param {Number} options.radius - The radius of the hexagon
+   * @param {number} options.adjustment - Adjust hexagon rotation angle
+   * @param {string} options.color - The color to draw the hexagon in
+   * @param {number} options.lineWidth - The lineWidth of the hexagon 
+   */
+  drawHexagon (
+    center = {
+      x: 0,
+      y: 0
+    }, {
+      radius = 0,
+      adjustment = 1,
+      color = '#000000',
+      lineWidth = 1
+    } = {}
+  ) {
+    const ctx = this.canvas.getContext('2d')
+    const step = Math.PI / 3
+    const shift = (Math.PI / 180.0) * adjustment
+
+    ctx.beginPath()
+
+    for (let i = 0; i <= 6; i++) {
+      const curStep = i * step + shift
+      ctx.lineTo(center.x + radius * Math.cos(curStep), center.y + radius * Math.sin(curStep))
+    }
+
+    ctx.strokeStyle = color
+    ctx.lineWidth = lineWidth
+    ctx.stroke()
   }
 
   /**
@@ -38,7 +77,7 @@ export default class Logo extends Hexagon {
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
     this.hexagons.forEach(hexagon => {
-      this.drawHexagon(center, hexagon.size, hexagon.options)
+      this.drawHexagon(center, hexagon.options)
     });
   }
 

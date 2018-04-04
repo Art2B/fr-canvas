@@ -3,38 +3,46 @@ export default {
   errorMessages: {
     fileType: 'File type is not supported. Please use png or jpg image.'
   },
+  hexaOptions: {
+    radius: 80,
+    stepGap: 8,
+    adjustment: 90,
+    color: '#000000',
+    lineThickness: 2.7,
+    sideNbStep: 10
+  },
   logoHexagons: [
     {
-      size: 46,
       step: 0.3,
       options: {
+        radius: 46,
         adjustment: 1,
         color: '#292824',
         lineWidth: 2
       }
     },
     {
-      size: 38,
       step: -0.5,
       options: {
+        radius: 38,
         adjustment: 1,
         color: 'indianred',
         lineWidth: 3
       }
     },
     {
-      size: 30,
       step: 1,
       options: {
+        radius: 30,
         adjustment: 1,
         color: '#292824',
         lineWidth: 2
       }
     },
     {
-      size: 25,
       step: 0.7,
       options: {
+        radius: 25,
         adjustment: 1,
         color: '#292824',
         lineWidth: 2
