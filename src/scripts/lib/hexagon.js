@@ -22,8 +22,10 @@ export default class Hexagon {
       stepGap: 8,
       adjustment: 1,
       color: '#000000',
-      lineThickness: 2.7,
-      sideNbStep: 20
+      lineThicknessRatio: 2.7,
+      minLineThickness: 0.2,
+      sideNbStep: 20,
+      minRadius: 5
     }, options)
   }
 
@@ -66,7 +68,8 @@ export default class Hexagon {
   getSidePath (startPoint, endPoint, {
     color = this.options.color,
     nbStep = this.options.sideNbStep,
-    lineThickness = this.options.lineThickness
+    lineThicknessRatio = this.options.lineThicknessRatio,
+    minLineThickness = this.options.minLineThickness
   } = {}) {
     const hiddenSide = new paper.Path()
     hiddenSide.add(startPoint)
@@ -78,13 +81,17 @@ export default class Hexagon {
     })
 
     for (let i = 0; i <= nbStep; i++) {
-      const offsetPoint = hiddenSide.getPointAt(Math.floor((hiddenSide.length / nbStep)) * i)
-      const deltaOffset = (i < nbStep) ? Math.floor((hiddenSide.length / nbStep)) * (i + 1) : Math.floor((hiddenSide.length / nbStep) * (i - 1))
-      const delta = hiddenSide.getPointAt(deltaOffset).rotate(90, offsetPoint).subtract(offsetPoint)
+      const offset = hiddenSide.length * (i / nbStep)
+      const offsetPoint = hiddenSide.getPointAt(offset)
+      const deltaOffset = (i < nbStep) ? Math.floor(hiddenSide.length * ((i + 1) / nbStep)) : Math.floor(hiddenSide.length * ((i - 1) / nbStep))
+      let delta = hiddenSide.getPointAt(deltaOffset).rotate(90, offsetPoint).subtract(offsetPoint)
+      if (i === nbStep) {
+        delta = delta.multiply(-1)
+      }
 
       const color = this.raster.getAverageColor(offsetPoint)
-      const value = color ? (1 - color.gray) * lineThickness : 0
-      delta.length = Math.max(value, 0.2)
+      const value = color ? (1 - color.gray) * lineThicknessRatio : 0
+      delta.length = Math.max(value, minLineThickness)
 
       const top = offsetPoint.add(delta)
       const bottom = offsetPoint.subtract(delta)
@@ -115,7 +122,9 @@ export default class Hexagon {
       color = this.options.color
     } = {}
   ) {
-    const path = new paper.Path({ closed: true })
+    const path = new paper.Path({
+      closed: true
+    })
     const anglesPoints = this.getHexagonAnglesPosition(center, { radius })
 
     anglesPoints.forEach((point, index) => {
@@ -160,7 +169,7 @@ export default class Hexagon {
     const innerRadius = Math.round(Math.sqrt(3) / 2 * radius)
     const ctx = this.canvas.getContext('2d')
     const xStep = Math.sqrt( Math.pow(radius, 2) - Math.pow((radius / 2), 2)) * 2
-    // this.canvas.height
+
     for (let y = 0; y < this.canvas.height; y += (radius * 1.5)) {
       const xOffset = (y % radius) ? xStep/2 : 0
       for (let x = 0; x < this.canvas.width; x += xStep) {

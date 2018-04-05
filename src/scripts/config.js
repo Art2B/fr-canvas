@@ -8,8 +8,10 @@ export default {
     stepGap: 8,
     adjustment: 90,
     color: '#000000',
-    lineThickness: 2.7,
-    sideNbStep: 10
+    lineThicknessRatio: 3.7,
+    minLineThickness: 0.2,
+    sideNbStep: 10,
+    minRadius: 5
   },
   logoHexagons: [
     {
