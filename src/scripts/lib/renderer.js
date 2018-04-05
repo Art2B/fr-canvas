@@ -14,7 +14,8 @@ export default class Renderer {
     this.canvas.width = image.width
     this.canvas.height = image.height
     this.image = image
-    this.hexa = new Hexagon(canvas, image, config.hexaOptions)
+
+    this.hexa = new Hexagon(this.canvas, image, config.hexaOptions)
   }
 
   /**

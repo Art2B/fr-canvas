@@ -30,6 +30,14 @@ export default class Hexagon {
   }
 
   /**
+   * [getCanvas return class canvas
+   * @return {Object} the class canvas element
+   */
+  getCanvas () {
+    return this.canvas
+  }
+
+  /**
    * [getHexagonAnglesPosition get array of paper.Point for each hexagon angles
    * @param  {Object} center Center point coordinates
    * @param  {number} center.x  x position of center
@@ -173,10 +181,18 @@ export default class Hexagon {
     for (let y = 0; y < this.canvas.height; y += (radius * 1.5)) {
       const xOffset = (y % radius) ? xStep/2 : 0
       for (let x = 0; x < this.canvas.width; x += xStep) {
-        this.drawRecursiveHexagons({
+        const center = {
           x: xOffset + x,
           y: y
-        }, {
+        }
+        const circle = new paper.Path.Circle(center, radius)
+        const color = this.raster.getAverageColor(circle)
+
+        if (!color || color.gray > 0.99) {
+          continue
+        }
+
+        this.drawRecursiveHexagons(center, {
           radius: radius
         })
       }
